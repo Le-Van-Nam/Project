@@ -196,4 +196,18 @@ class CategoryController extends Controller
         $this->content = $this->render('views/categories/detail.php', ['category' => $category]);
         require_once 'views/layouts/main.php';
     }
+
+    public function detailb()
+    {
+        if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+            $_SESSION['error'] = 'ID không hợp lệ';
+            header('Location:index.php?controller=category&action=index');
+            exit();
+        }
+        $id = $_GET['id'];
+        $category_model = new Category();
+        $category = $category_model->getOne($id);
+        $this->content = $this->render('views/categories/detail.php', ['category' => $category]);
+        require_once 'views/layouts/main.php';
+    }
 }

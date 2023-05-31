@@ -7,30 +7,31 @@ class CategoryController extends Controller
     public function index()
     {
         $category_model = new Category();
-        $params=[
-            'limit'=>4,
-            'query_string'=>'page',
-            'controller'=>'category',
-            'action'=>'index',
-            'full_mode'=>FALSE,
+        $params = [
+            'limit' => 4,
+            'query_string' => 'page',
+            'controller' => 'category',
+            'action' => 'index',
+            'full_mode' => FALSE,
         ];
-        $page=1;
-        if(isset($_GET['page'])){
-            $page=$_GET['page'];
-
+        $page = 1;
+        if (isset($_GET['page'])) {
+            $page = $_GET['page'];
         }
-        $count_total=$category_model->countTotal();
-        $params['total']=$count_total;
-        $params['page']=$page;
-        $paganition= new Pagination($params);
-        $pages=$paganition->getPagination();
+        $count_total = $category_model->countTotal();
+        $params['total'] = $count_total;
+        $params['page'] = $page;
+        $paganition = new Pagination($params);
+        $pages = $paganition->getPagination();
         $categories = $category_model->getAllPagination($params);
-        $this->content = $this->render('views/categories/index.php',
-            ['categories' => $categories,
-                'pages'=>$pages
-            ]);
+        $this->content = $this->render(
+            'views/categories/index.php',
+            [
+                'categories' => $categories,
+                'pages' => $pages
+            ]
+        );
         require_once 'views/layouts/main.php';
-
     }
 
     public function create()
@@ -44,8 +45,7 @@ class CategoryController extends Controller
             //check validate
             if (empty($name)) {
                 $this->error = 'Cần nhập tên';
-            }
-            else if ($avatar_files['error'] == 0) {
+            } else if ($avatar_files['error'] == 0) {
                 $extension_arr = ['jpg', 'jpeg', 'gif', 'png'];
                 $extension = pathinfo($avatar_files['name'], PATHINFO_EXTENSION);
                 $extension = strtolower($extension);
@@ -81,7 +81,6 @@ class CategoryController extends Controller
                 header('Location: index.php?controller=category&action=index');
                 exit();
             }
-
         }
         $this->content = $this->render('views/categories/create.php');
         require_once 'views/layouts/main.php';
@@ -106,8 +105,7 @@ class CategoryController extends Controller
 
             if (empty($name)) {
                 $this->error = 'Cần nhập tên';
-            }
-            else if ($avatar_files['error'] == 0) {
+            } else if ($avatar_files['error'] == 0) {
                 $extension_arr = ['jpg', 'jpeg', 'gif', 'png'];
                 $extension = pathinfo($avatar_files['name'], PATHINFO_EXTENSION);
                 $extension = strtolower($extension);
@@ -148,42 +146,54 @@ class CategoryController extends Controller
                 header('Location: index.php?controller=category&action=index');
                 exit();
             }
-
         }
 
         $this->content = $this->render('views/categories/update.php', ['category' => $category]);
         require_once 'views/layouts/main.php';
     }
-    public function delete(){
-        if(!isset($_GET['id'])||!is_numeric($_GET['id'])){
-            $_SESSION['error']='ID không hợp lệ';
+    public function delete()
+    {
+        if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+            $_SESSION['error'] = 'ID không hợp lệ';
             header('Location:index.php?controller=category&action=index');
             exit();
         }
-        $id=$_GET['id'];
-        $category_model= new Category();
-        $is_delete=$category_model->delete($id);
-        if($is_delete){
-            $_SESSION['success']='<i class="mdi mdi-emoticon-happy"></i>Success delete';
-        }else{
-            $_SESSION['error']='<i class="mdi mdi-emoticon-sad"></i>Xóa thất bại';
+        $id = $_GET['id'];
+        $category_model = new Category();
+        $is_delete = $category_model->delete($id);
+        if ($is_delete) {
+            $_SESSION['success'] = '<i class="mdi mdi-emoticon-happy"></i>Success delete';
+        } else {
+            $_SESSION['error'] = '<i class="mdi mdi-emoticon-sad"></i>Xóa thất bại';
         }
         header('Location:index.php?controller=category&action=index');
         exit();
     }
-    public function detail(){
-        if(!isset($_GET['id'])||!is_numeric($_GET['id'])){
-            $_SESSION['error']='ID không hợp lệ';
+    public function detail()
+    {
+        if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+            $_SESSION['error'] = 'ID không hợp lệ';
             header('Location:index.php?controller=category&action=index');
             exit();
         }
-        $id=$_GET['id'];
-        $category_model=new Category();
-        $category=$category_model->getOne($id);
-        $this->content=$this->render('views/categories/detail.php',['category'=>$category]);
+        $id = $_GET['id'];
+        $category_model = new Category();
+        $category = $category_model->getOne($id);
+        $this->content = $this->render('views/categories/detail.php', ['category' => $category]);
         require_once 'views/layouts/main.php';
-
     }
 
+    public function detaila()
+    {
+        if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+            $_SESSION['error'] = 'ID không hợp lệ';
+            header('Location:index.php?controller=category&action=index');
+            exit();
+        }
+        $id = $_GET['id'];
+        $category_model = new Category();
+        $category = $category_model->getOne($id);
+        $this->content = $this->render('views/categories/detail.php', ['category' => $category]);
+        require_once 'views/layouts/main.php';
+    }
 }
-?>
